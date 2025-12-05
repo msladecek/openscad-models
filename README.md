@@ -35,6 +35,15 @@ A simple clamp to hold the probe cables of a multimeter for easier storage.
 ![screenshot of the cable clamp model](/images/multimeter_clamp.png)
 ![photo of the clamp holding cables of the multimeter](/images/multimeter_photo.jpeg)
 
+## DELL WD19 Docking Station Mount
+
+A cradle for mounting a DELL WD19 dockig station under an [AlzaErgo Riser ER100](https://www.alza.cz/alzapower-ergoriser-er100-d5346298.htm).
+
+Includes cut-outs for IO ports and airflow vents.
+
+![screenshot of docking station cradle](/images/docking_station_mount.png)
+![photo of the mounted docking station under the riser shelf](/images/docking_station_mount_photo.jpeg)
+
 ## License
 
 The `src/*.scad` source code is licensed under [BSD-3-Clause](https://opensource.org/license/BSD-3-Clause) license.
