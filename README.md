@@ -13,7 +13,7 @@ A simple 3d model for tool holders that clip onto the ikea vattenkar mini-shelve
 The tool holder model is defined using [openscad](https://openscad.org/) and can be easily adjusted for various tools by changing the width, depth and height parameters as well as the label.
 
 ![screenshot from the openscad viwer showing an example tool holder box](/images/tool_holder_screenshot.png)
-![screenshot from the openscad viwer showing an example tool holder box from its side, revealing a clip that mates up with the rim of the shelf](/images/tool_holder_side_screenshot_side.png)
+![screenshot from the openscad viwer showing an example tool holder box from its side, revealing a clip that mates up with the rim of the shelf](/images/tool_holder_side_screenshot.png)
 
 ![photo of multiple 3d printed tool holders mounted on the shelf](/images/tool_holder_photo.jpeg)
 
