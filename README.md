@@ -44,6 +44,12 @@ Includes cut-outs for IO ports and airflow vents.
 ![screenshot of docking station cradle](/images/docking_station_mount.png)
 ![photo of the mounted docking station under the riser shelf](/images/docking_station_mount_photo.jpeg)
 
+## Parts Tray
+
+A simple tray for keeping track of little parts so they don't get lost around the desk.
+
+![screenshot of the parts tray](/images/tray_screenshot.png)
+
 ## License
 
 The `src/*.scad` source code is licensed under [BSD-3-Clause](https://opensource.org/license/BSD-3-Clause) license.
