@@ -34,15 +34,14 @@ module tool_slot(w, d, h, skew=0, wall=wall, anchor=BOTTOM, spin=0, orient=UP) {
 module clip(w, wall=wall, orient=UP, anchor=CENTER, spin=0) {
 	h = shelf_wall_height / 2;
 	attachable(anchor, spin, orient, size=[w, shelf_wall_thickness + wall, h]) {
-		diff()
+		diff("cutout")
 		back(shelf_wall_thickness / 2)
 		cuboid([w, wall, h], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK], orient=orient, anchor=CENTER, spin=spin)
-			tag("keep")
 			attach(FRONT, BACK, align=TOP)
 			cuboid([w, shelf_wall_thickness, wall])
-				tag("remove")
+				tag("cutout")
 				attach(BOTTOM, TOP, align=FRONT)
-				cuboid([w, shelf_edge_thickness, shelf_edge_height], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK]);
+				cuboid([w + 0.02, shelf_edge_thickness, shelf_edge_height], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK]);
 		children();
 	}
 }
@@ -55,35 +54,40 @@ module backstop(width, wall=wall, orient=UP, anchor=TOP, spin=0) {
 	}
 }
 
-module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="horizontal", wall=wall) {
+module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="horizontal", wall=wall, anchor=BOTTOM, orient=UP, spin=0) {
 	full_width = w + 2 * wall;
-	difference () {
-		tool_slot(w, d, h)
-		{
-			attach(BACK, FRONT, align=TOP)
-			clip(full_width, wall=wall);
-
-			if (h > shelf_wall_height + 2 * wall) {
+	attachable(anchor=anchor, spin=spin, orient=orient, size=[full_width, d + 2 * wall + shelf_edge_thickness, h + wall]) {
+		diff () {
+			tool_slot(w, d, h, anchor=BACK)
+			{
 				attach(BACK, FRONT, align=TOP)
-				fwd(shelf_wall_height)
-				backstop(full_width, wall=wall);
-			}
-		}
+				clip(full_width, wall=wall);
 
-		up(h)
-		fwd(d / 2 + wall)
-		rot(from=UP, to=FRONT)
-		for (i = [0: len(lines)]) {
-			fwd(i * text_size * 1.2)
-			if (orientation == "vertical") {
-				fwd(text_size)
-				text3d(lines[i], h=1, spin=90, size=text_size, atype="ycenter", anchor=RIGHT);
-			}
-			else {
-				fwd(text_size * 2)
-				text3d(lines[i], h=1, size=text_size, anchor=CENTER);
+				if (h > shelf_wall_height + 2 * wall) {
+					attach(BACK, FRONT, align=TOP)
+					fwd(shelf_wall_height)
+					backstop(full_width, wall=wall);
+				}
+
+				tag("remove")
+				position(FRONT)
+				down(d / 2 + wall)
+				up(h /2)
+				rot(from=UP, to=FRONT)
+				for (i = [0: len(lines)]) {
+					fwd(i * text_size * 1.2)
+					if (orientation == "vertical") {
+						fwd(text_size)
+						text3d(lines[i], h=1, spin=90, size=text_size, atype="ycenter", anchor=RIGHT);
+					}
+					else {
+						fwd(text_size * 2)
+						text3d(lines[i], h=1, size=text_size, anchor=CENTER);
+					}
+				}
 			}
 		}
+		children();
 	}
 }
 
@@ -97,16 +101,29 @@ xdistribute(spacing=100) {
 	tool_slot_with_clip_and_label(["knife"], 33, 18, 80, text_size=12, orientation="vertical");
 
 	// tweezers set
-	group() {
-		tool_slot_with_clip_and_label(["curved"], 10, 16, 60, text_size=8, orientation="vertical");
+	tool_slot_with_clip_and_label(["curved"], 10, 16, 60, text_size=8, orientation="vertical")
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["sprung"], 10, 16, 60, text_size=8, orientation="vertical")
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["straight"], 10, 16, 60, text_size=8, orientation="vertical")
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["spade"], 10, 16, 60, text_size=8, orientation="vertical");
 
-		right(1 * (10 + 1.5 * wall))
-		tool_slot_with_clip_and_label(["sprung"], 10, 16, 60, text_size=8, orientation="vertical");
 
-		right(2 * (10 + 1.5 * wall))
-		tool_slot_with_clip_and_label(["straight"], 10, 16, 60, text_size=8, orientation="vertical");
-
-		right(3 * (10 + 1.5 * wall))
-		tool_slot_with_clip_and_label(["spade"], 10, 16, 60, text_size=8, orientation="vertical");
-	}
+	tool_slot_with_clip_and_label(["knife"], 17, 8, 60, text_size=8, orientation="vertical", anchor=BACK+BOTTOM)
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["marker"], 12, 12, 60, text_size=8, orientation="vertical", anchor=BACK+BOTTOM)
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["marker"], 12, 12, 60, text_size=8, orientation="vertical", anchor=BACK+BOTTOM)
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["marker"], 18, 18, 60, text_size=8, orientation="vertical", anchor=BACK+BOTTOM)
+	attach(RIGHT, LEFT)
+	down(0.5 * wall)
+	tool_slot_with_clip_and_label(["pencil"], 11, 11, 60, text_size=8, orientation="vertical", anchor=BACK+BOTTOM);
 }
