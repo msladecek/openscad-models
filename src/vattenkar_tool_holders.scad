@@ -7,7 +7,7 @@ tweezers_depth = 15;
 tweezers_height = 60;
 
 shelf_wall_thickness = 1.5;
-shelf_wall_height = 37.3;
+shelf_wall_height = 39;
 
 shelf_edge_thickness = 2.7;
 shelf_edge_height = 4.5;
@@ -33,23 +33,42 @@ module tool_slot(w, d, h, skew=0, wall=wall, anchor=BOTTOM, spin=0, orient=UP) {
 
 module clip(w, wall=wall, orient=UP, anchor=CENTER, spin=0) {
 	h = shelf_wall_height / 2;
-	attachable(anchor, spin, orient, size=[w + 2 * wall, shelf_wall_thickness + wall, h]) {
+	attachable(anchor, spin, orient, size=[w, shelf_wall_thickness + wall, h]) {
 		diff()
 		back(shelf_wall_thickness / 2)
-		cuboid([w + 2 * wall, wall, h], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK], orient=orient, anchor=CENTER, spin=spin)
+		cuboid([w, wall, h], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK], orient=orient, anchor=CENTER, spin=spin)
 			tag("keep")
 			attach(FRONT, BACK, align=TOP)
-			cuboid([w + 2 * wall, shelf_wall_thickness, wall])
+			cuboid([w, shelf_wall_thickness, wall])
 				tag("remove")
 				attach(BOTTOM, TOP, align=FRONT)
-				cuboid([w + 2 * wall, shelf_edge_thickness, shelf_edge_height], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK]);
+				cuboid([w, shelf_edge_thickness, shelf_edge_height], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK]);
 		children();
 	}
 }
+
+module backstop(width, wall=wall, orient=UP, anchor=TOP, spin=0) {
+	full_height = 2 * wall;
+	attachable(anchor, spin, orient, size=[width, shelf_wall_thickness + wall, full_height]) {
+		cuboid([width, shelf_wall_thickness + wall, full_height], edges=[BOTTOM+BACK], chamfer=wall, orient=orient, spin=spin, anchor=anchor);
+		children();
+	}
+}
+
 module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="horizontal", wall=wall) {
+	full_width = w + 2 * wall;
 	difference () {
 		tool_slot(w, d, h)
-		attach(BACK, FRONT, align=TOP) clip(w);
+		{
+			attach(BACK, FRONT, align=TOP)
+			clip(full_width, wall=wall);
+
+			if (h > shelf_wall_height + 2 * wall) {
+				attach(BACK, FRONT, align=TOP)
+				fwd(shelf_wall_height)
+				backstop(full_width, wall=wall);
+			}
+		}
 
 		up(h)
 		fwd(d / 2 + wall)
@@ -68,28 +87,26 @@ module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="
 	}
 }
 
-tool_slot_with_clip_and_label(["KNIPEX"], 51, 14, 50);
+xdistribute(spacing=100) {
+	tool_slot_with_clip_and_label(["KNIPEX"], 51, 14, 50);
 
-right(100)
-tool_slot_with_clip_and_label(["Pro'sKit", "Green"], 53, 11, 50);
+	tool_slot_with_clip_and_label(["Pro'sKit", "Green"], 53, 11, 50);
 
-right(200)
-tool_slot_with_clip_and_label(["Pro'sKit", "Yellow"], 46, 8, 50);
+	tool_slot_with_clip_and_label(["Pro'sKit", "Yellow"], 46, 8, 50);
 
-right(300)
-tool_slot_with_clip_and_label(["knife"], 33, 18, 80, text_size=12, orientation="vertical");
+	tool_slot_with_clip_and_label(["knife"], 33, 18, 80, text_size=12, orientation="vertical");
 
-// tweezers set
-right(400)
-{
-	tool_slot_with_clip_and_label(["curved"], 10, 16, 60, text_size=8, orientation="vertical");
+	// tweezers set
+	group() {
+		tool_slot_with_clip_and_label(["curved"], 10, 16, 60, text_size=8, orientation="vertical");
 
-	right(1 * (10 + 1.5 * wall))
-	tool_slot_with_clip_and_label(["sprung"], 10, 16, 60, text_size=8, orientation="vertical");
+		right(1 * (10 + 1.5 * wall))
+		tool_slot_with_clip_and_label(["sprung"], 10, 16, 60, text_size=8, orientation="vertical");
 
-	right(2 * (10 + 1.5 * wall))
-	tool_slot_with_clip_and_label(["straight"], 10, 16, 60, text_size=8, orientation="vertical");
+		right(2 * (10 + 1.5 * wall))
+		tool_slot_with_clip_and_label(["straight"], 10, 16, 60, text_size=8, orientation="vertical");
 
-	right(3 * (10 + 1.5 * wall))
-	tool_slot_with_clip_and_label(["spade"], 10, 16, 60, text_size=8, orientation="vertical");
+		right(3 * (10 + 1.5 * wall))
+		tool_slot_with_clip_and_label(["spade"], 10, 16, 60, text_size=8, orientation="vertical");
+	}
 }
