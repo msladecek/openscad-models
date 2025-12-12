@@ -90,7 +90,7 @@ module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="
 xdistribute(spacing=100) {
 	tool_slot_with_clip_and_label(["KNIPEX"], 51, 14, 50);
 
-	tool_slot_with_clip_and_label(["Pro'sKit", "Green"], 53, 11, 50);
+	tool_slot_with_clip_and_label(["Pro'sKit", "Green"], 53, 12, 50);
 
 	tool_slot_with_clip_and_label(["Pro'sKit", "Yellow"], 46, 8, 50);
 
