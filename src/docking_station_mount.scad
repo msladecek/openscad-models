@@ -18,6 +18,20 @@ hole_spacing_x = 15;
 hole_spacing_y = 240 / 12;
 hole_offset = hole_offset_edge_to_front_edge - plate_thickness - hole_diameter / 2;
 
+include <BOSL2/std.scad>
+
+usb_hub_height = 19;
+usb_hub_width = 167;
+usb_hub_depth = 66;
+usb_hub_connection_power_and_data_port_width = 35;
+usb_hub_connection_power_and_data_port_offset = 30;
+usb_port_spacing = 8;
+usb_port_width = 14;
+usb_port_height = 6;
+
+usb_hub_mounting_overhang = (width - usb_hub_width) / 2;
+
+
 thickness = 2;
 peg_diameter = hole_diameter * 1.5;
 
@@ -207,6 +221,78 @@ module cradle() {
 	}
 }
 
+module usb_hub_cradle() {
+	down(usb_hub_height)
+	down(thickness)
+	diff("body")
+	rot(from=FRONT, to=RIGHT)
+	back(depth)
+	back(thickness)
+	down(thickness)
+	cuboid([usb_hub_width + 2 * thickness, usb_hub_depth + 2 * thickness, usb_hub_height + thickness], except=[TOP, BOTTOM], rounding=(radius + thickness), anchor=BOTTOM+BACK)
+	{
+		tag("body")
+		attach(TOP, TOP, inside=true)
+		down(nothing)
+		cuboid([usb_hub_width, usb_hub_depth, usb_hub_height], except=[TOP, BOTTOM], rounding=radius)
+		{
+			attach(FRONT, BACK)
+			down(nothing)
+			back(thickness)
+			cuboid([(usb_port_width + usb_port_spacing) * 7, 2 * thickness, usb_hub_height - thickness], rounding=(2 * thickness), edges=[BOTTOM + LEFT, BOTTOM + RIGHT]);
+
+			attach(RIGHT, BACK)
+			down(nothing)
+			back(thickness)
+			cuboid([(usb_port_width + usb_port_spacing) * 2, 2 * thickness, usb_hub_height - thickness], rounding=(2 * thickness), edges=[BOTTOM + LEFT, BOTTOM + RIGHT]);
+
+			attach(BACK, BACK, align=RIGHT)
+			down(nothing)
+			back(thickness)
+			right(usb_hub_connection_power_and_data_port_offset - usb_hub_connection_power_and_data_port_width / 2)
+			cuboid([usb_hub_connection_power_and_data_port_width, 2 * thickness, usb_hub_height - thickness], rounding=(2 * thickness), edges=[BOTTOM + LEFT, BOTTOM + RIGHT]);
+		}
+		{
+			xflip_copy()
+			yflip_copy()
+			position(TOP + RIGHT)
+			left(thickness)
+			cuboid([usb_hub_mounting_overhang + thickness, 3 * hole_spacing_x + peg_diameter, thickness], anchor=TOP+LEFT)
+			{
+				attach(BOTTOM, FRONT, align=FRONT+LEFT)
+				left(thickness)
+				fillet(l=(3 * hole_spacing_x + peg_diameter - (usb_port_width + usb_port_spacing) * 2)/2, r=(4 * thickness));
+
+				position(BOTTOM+RIGHT+FRONT)
+				cuboid([thickness, peg_diameter, thickness], anchor=BOTTOM+LEFT+FRONT)
+				{
+					up(height)
+					down(4.5*thickness)
+					right(3.5 * thickness)
+					top_half()
+					left_half()
+					rot(from=UP, to=FRONT)
+					tube(h=peg_diameter, od=(2 * 4 * thickness), id=(2 * 4 * thickness - 2 * thickness));
+
+					attach(TOP, BOTTOM, align=LEFT)
+					cuboid([thickness, peg_diameter, (height - 5 * thickness)]);
+
+					attach(RIGHT, LEFT)
+					up(3 * thickness)
+					back(height)
+					fwd(thickness)
+					diff("fastener")
+					cuboid([5.5 * hole_spacing_y - width/2, peg_diameter, thickness])
+					right((5.5 * hole_spacing_y - width/2) / 2)
+					cyl(h=thickness, d=peg_diameter)
+					tag("fastener")
+					cyl(h=2*thickness, d=3);
+				}
+			}
+		}
+	}
+}
+
 $fn = 100;
 
 // test_secondary_bracket();
@@ -222,6 +308,9 @@ $fn = 100;
 // color("salmon")
 // pegs();
 
-cradle();
+// cradle();
+
+// left_half()
+usb_hub_cradle();
 
 // fasteners();
