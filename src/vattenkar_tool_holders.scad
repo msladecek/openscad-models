@@ -92,6 +92,8 @@ module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="
 }
 
 xdistribute(spacing=100) {
+	tool_slot_with_clip_and_label(["Caliper"], 94, 24, 100, text_size=20);
+
 	tool_slot_with_clip_and_label(["KNIPEX"], 51, 14, 50);
 
 	tool_slot_with_clip_and_label(["Pro'sKit", "Green"], 53, 12, 50);
