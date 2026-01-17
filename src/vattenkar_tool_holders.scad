@@ -12,8 +12,6 @@ shelf_wall_height = 39;
 shelf_edge_thickness = 2.7;
 shelf_edge_height = 4.5;
 
-clip_thickness = shelf_wall_thickness + wall;
-
 module base_tray() {
 	cuboid([30, 30, 10], except=[TOP, BOTTOM], rounding=3, anchor=BOTTOM);
 }
@@ -33,15 +31,13 @@ module tool_slot(w, d, h, skew=0, wall=wall, anchor=BOTTOM, spin=0, orient=UP) {
 
 module clip(w, wall=wall, orient=UP, anchor=CENTER, spin=0) {
 	h = shelf_wall_height / 2;
-	attachable(anchor, spin, orient, size=[w, shelf_wall_thickness + wall, h]) {
+	attachable(anchor, spin, orient, size=[w, wall + shelf_edge_thickness, h]) {
 		diff("cutout")
-		back(shelf_wall_thickness / 2)
-		cuboid([w, wall, h], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK], orient=orient, anchor=CENTER, spin=spin)
-			attach(FRONT, BACK, align=TOP)
-			cuboid([w, shelf_wall_thickness, wall])
-				tag("cutout")
-				attach(BOTTOM, TOP, align=FRONT)
-				cuboid([w + 0.02, shelf_edge_thickness, shelf_edge_height], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK]);
+		cuboid([w, wall+ shelf_edge_thickness, h], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK], orient=orient, spin=spin)
+		attach(FRONT, BACK, align=BOTTOM, inside=true)
+		tag("cutout") cuboid([w + 0.02, shelf_wall_thickness, h - wall])
+		attach(FRONT, FRONT, align=TOP)
+		cuboid([w + 0.02, shelf_edge_thickness - shelf_wall_thickness, shelf_edge_height], chamfer=1, edges=[TOP+BACK, BOTTOM+BACK]);
 		children();
 	}
 }
@@ -57,7 +53,8 @@ module backstop(width, wall=wall, orient=UP, anchor=TOP, spin=0) {
 module tool_slot_with_clip_and_label(lines, w, d, h, text_size=10, orientation="horizontal", wall=wall, anchor=BOTTOM, orient=UP, spin=0) {
 	full_width = w + 2 * wall;
 	attachable(anchor=anchor, spin=spin, orient=orient, size=[full_width, d + 2 * wall + shelf_edge_thickness, h + wall]) {
-		diff () {
+		diff()
+		{
 			tool_slot(w, d, h, anchor=BACK)
 			{
 				attach(BACK, FRONT, align=TOP)
