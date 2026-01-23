@@ -84,7 +84,7 @@ module msw_13(active=false) {
 }
 
 module mot1n() {
-	down(8.3 + 8)
+	down(8.3)
 	cylinder(h=27, d=23.8, anchor=TOP)
 	{
 		attach(TOP)
@@ -143,3 +143,56 @@ module pbs_10b(position="up") {
 			cube([0.5, 2, 6.4], anchor=TOP);
 	}
 }
+
+xteink_x4__width = 68;
+xteink_x4__length = 114;
+xteink_x4__height = 6.3;
+
+module xteink_x4(anchor=CENTER, spin=0, orient=UP) {
+	size = [xteink_x4__width, xteink_x4__length, xteink_x4__height];
+
+	top_margin = 6;
+	bottom_margin = 17;
+	side_margin = 7;
+
+	attachable(anchor, spin, orient, size=size) {
+		tag_scope()
+		diff()
+		cuboid(size, rounding=2)
+		attach(TOP, TOP, align=FRONT, inside=true)
+		down(0.01)
+		back(top_margin)
+		tag("remove") cuboid([xteink_x4__width - 2 * side_margin, xteink_x4__length - top_margin - bottom_margin, 0.1], except=[TOP, BOTTOM], rounding=1);
+
+		children();
+	}
+}
+
+battery_box_2AAA__width = 24.5;
+battery_box_2AAA__length = 54.2;
+battery_box_2AAA__height = 13.5;
+
+module battery_box_2AAA() {
+	rounding_top = 4;
+	size = [battery_box_2AAA__width, battery_box_2AAA__length, battery_box_2AAA__height];
+	cuboid(size, rounding=rounding_top, edges=[TOP+LEFT, TOP+RIGHT]);
+}
+
+led__base_diameter = 5.5;
+led__body_diameter = 5;
+
+module led() {
+	$fn = 32;
+	zcyl(h=0.5, d=led__base_diameter)
+	{
+		attach(TOP, BOTTOM)
+		zcyl(h=8.2, d=led__body_diameter, rounding2=2.5);
+
+		attach(BOTTOM, TOP)
+		xdistribute(spacing=2.5) {
+			cuboid([0.2, 0.2, 10]);
+			cuboid([0.2, 0.2, 12]);
+		}
+	}
+}
+
