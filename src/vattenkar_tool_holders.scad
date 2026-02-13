@@ -114,6 +114,8 @@ module tool_slot_with_clip_and_label(
 }
 
 xdistribute(spacing=100) {
+	tool_slot_with_clip_and_label(["cable", "ties"], 80, 20, 50, text_size=12);
+
 	tool_slot_with_clip_and_label(["caliper"], 40, 10, 20, text_size=6, floor=false);
 
 	tool_slot_with_clip_and_label(["Caliper"], 94, 24, 100, text_size=20, side_shelf=LEFT);
