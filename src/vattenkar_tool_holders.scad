@@ -93,17 +93,20 @@ module tool_slot_with_clip_and_label(
 
 				tag("remove")
 				position(FRONT)
-				down(d / 2 + wall)
-				up(h / 2)
-				rot(from=UP, to=FRONT)
 				for (i = [0: len(lines)]) {
-					fwd(i * text_size * 1.2)
 					if (orientation == "vertical") {
+						// TODO: do something with actual centering semantics instead of this stupid calculating
+						left((len(lines) - 1) * text_size * 1.2 / 2)
+						right(i * text_size * 1.2)
+						down(2 * wall)
+						up(h / 2)
+						rot(from=UP, to=FRONT)
 						fwd(text_size)
 						text3d(lines[i], h=1, spin=90, size=text_size, atype="ycenter", anchor=RIGHT);
 					}
 					else {
-						fwd(text_size)
+						down(i * text_size * 1.2)
+						rot(from=UP, to=FRONT)
 						text3d(lines[i], h=1, size=text_size, anchor=CENTER);
 					}
 				}
@@ -114,6 +117,8 @@ module tool_slot_with_clip_and_label(
 }
 
 xdistribute(spacing=100) {
+	tool_slot_with_clip_and_label(["KNIPEX"], 10, 35, 50, text_size=6, orientation="vertical");
+
 	tool_slot_with_clip_and_label(["cable", "ties"], 80, 20, 50, text_size=12);
 
 	tool_slot_with_clip_and_label(["caliper"], 40, 10, 20, text_size=6, floor=false);
