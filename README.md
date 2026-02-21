@@ -50,9 +50,10 @@ A simple tray for keeping track of little parts so they don't get lost around th
 
 ![screenshot of the parts tray](/images/tray_screenshot.png)
 
-## License
+## External Drive Holder
 
-The `src/*.scad` source code is licensed under [BSD-3-Clause](https://opensource.org/license/BSD-3-Clause) license.
+A basic box sized to hold two WD external hard drives, one thicker than the other.
+I may be easily adjusted to accomodate more drives of the the same width but varying thicknesses.
 
-Many of the files rely on the Belfry OpenScad Library (BOSL2) which is included as a git submodule.
-BOSL2 itself is licensed under [BSD-2-Clause](https://opensource.org/license/BSD-2-Clause).
+![screenshot of the drive holder](/images/drive_holder.png)
+![photo of the drive holder](/images/drive_holder_photo.jpeg)
