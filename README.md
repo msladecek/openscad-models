@@ -55,5 +55,9 @@ A simple tray for keeping track of little parts so they don't get lost around th
 A basic box sized to hold two WD external hard drives, one thicker than the other.
 I may be easily adjusted to accomodate more drives of the the same width but varying thicknesses.
 
-![screenshot of the drive holder](/images/drive_holder.png)
-![photo of the drive holder](/images/drive_holder_photo.jpeg)
+## Vacuum cleaner adapter socket plate
+
+Small plate that attaches to the bottom of the vacuum cleaner handle and allows for attaching an extra swappable adapter so its always at hand.
+
+![screenshot of adapter plate](/images/vacuum_cleaner_adapter.png)
+![photo of vacuum cleaner](/images/vacuum_cleaner_photo.jpeg)
