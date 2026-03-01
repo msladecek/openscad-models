@@ -1,9 +1,14 @@
 include <BOSL2/std.scad>
 
-module smts_102(angle=0) {
-	body_depth = 5.2;
-	body_width = 8.2;
-	body_height = 7.1;
+smts_102__body_depth = 5.3;
+smts_102__body_width = 8.3;
+smts_102__body_height = 7.1;
+smts_102__bolt_diameter = 5;
+
+module smts_102(angle=0, locating_plate=false, nuts=false) {
+	body_depth = smts_102__body_depth;
+	body_width = smts_102__body_width;
+	body_height = smts_102__body_height;
 
 	lever_diameter = 2.5;
 	lever_height = 9.5;
@@ -12,13 +17,20 @@ module smts_102(angle=0) {
 	cube([body_width, body_depth, body_height], anchor=TOP)
 	{
 		attach(TOP, BOTTOM)
-		cylinder(d=5, h=6)
+		cylinder(d=smts_102__bolt_diameter, h=6) {
+			if (locating_plate) zcyl(d=11, h=0.5);
+
+			if (nuts)
+			zcopies(n=2, spacing=1.5)
+			regular_prism(n=6, id=6, h=1);
+
 			attach(TOP, BOTTOM)
 			down(3)
 			yrot(constrain(angle, -12, 12))
 			cylinder(d=lever_diameter, h=(lever_core_height + 3))
 				attach(TOP)
 				sphere(d=lever_diameter);
+		}
 
 		attach(BOTTOM, TOP)
 		{
@@ -145,14 +157,14 @@ module pbs_10b(position="up") {
 }
 
 xteink_x4__width = 68;
-xteink_x4__length = 114;
+xteink_x4__length = 115;
 xteink_x4__height = 6.3;
+xteink_x4__top_margin = 6;
+xteink_x4__bottom_margin = 17;
 
 module xteink_x4(anchor=CENTER, spin=0, orient=UP) {
 	size = [xteink_x4__width, xteink_x4__length, xteink_x4__height];
 
-	top_margin = 6;
-	bottom_margin = 17;
 	side_margin = 7;
 
 	attachable(anchor, spin, orient, size=size) {
@@ -161,8 +173,8 @@ module xteink_x4(anchor=CENTER, spin=0, orient=UP) {
 		cuboid(size, rounding=2)
 		attach(TOP, TOP, align=FRONT, inside=true)
 		down(0.01)
-		back(top_margin)
-		tag("remove") cuboid([xteink_x4__width - 2 * side_margin, xteink_x4__length - top_margin - bottom_margin, 0.1], except=[TOP, BOTTOM], rounding=1);
+		back(xteink_x4__top_margin)
+		tag("remove") cuboid([xteink_x4__width - 2 * side_margin, xteink_x4__length - xteink_x4__top_margin - xteink_x4__bottom_margin, 0.1], except=[TOP, BOTTOM], rounding=1);
 
 		children();
 	}
@@ -196,3 +208,58 @@ module led() {
 	}
 }
 
+module cr2032_battery_holder() {
+	holder_inner_diameter = 19;
+	holder_outer_diameter = 22.5;
+	holder_body_height = 4;
+	holder_side_height = 2;
+	holder_floor_thickness = holder_body_height - holder_side_height;
+	holder_center_diameter = 6.5;
+	holder_bottom_extension_height = 2;
+	holder_pin_height = 3;
+	holder_side_extension_width = 6.5;
+	holder_side_extension_length = 6;
+	holder_positive_pin_offset_from_side = 2.5;
+	holder_negative_pin_offset_from_side = 6;
+	holder_spring_thickness = 0.5;
+	holder_spring_width = 4.5;
+	holder_spring_height = 5.5;
+	holder_spring_length = 17.8;
+	holder_pin_width = 0.5;
+	holder_locating_pin_diameter = 1.3;
+	holder_locating_pin_offset = holder_outer_diameter / 2 - 1.5;
+
+	tube(od=holder_outer_diameter, id=holder_center_diameter, h=holder_floor_thickness) {
+		attach(TOP, BOTTOM)
+		tube(od=holder_outer_diameter, id=holder_inner_diameter, h=holder_side_height)
+		attach(RIGHT, LEFT, align=TOP)
+		down(1)
+		cuboid([holder_side_extension_width, holder_side_extension_length + 1, holder_body_height + holder_bottom_extension_height], edges=[FRONT+RIGHT, BACK+RIGHT], rounding=1)
+		attach(BOTTOM, TOP, align=RIGHT)
+		right(holder_positive_pin_offset_from_side)
+		cuboid([holder_pin_width, holder_pin_width, holder_pin_height]);
+
+		attach(BOTTOM, TOP)
+		zrot_copies(n=3)
+		back(holder_locating_pin_offset)
+		zcyl(d=holder_locating_pin_diameter, h=holder_bottom_extension_height);
+
+		position(BOTTOM)
+		left(holder_center_diameter / 2)
+		cuboid([holder_side_extension_length, holder_side_extension_width, holder_bottom_extension_height], except=[TOP, BOTTOM], rounding=1, anchor=TOP+RIGHT);
+
+		position(BOTTOM+LEFT)
+		down(holder_bottom_extension_height)
+		right(holder_negative_pin_offset_from_side)
+		cuboid([holder_pin_width, holder_pin_width, holder_pin_height], anchor=TOP);
+
+		position(BOTTOM)
+		up(holder_spring_height)
+		right(holder_outer_diameter / 2 + holder_side_extension_length - holder_positive_pin_offset_from_side)
+		cuboid([holder_spring_length, holder_spring_width, holder_spring_thickness], anchor=TOP+RIGHT)
+		position(BOTTOM+RIGHT)
+		cuboid([holder_spring_thickness, holder_spring_width, 1], anchor=TOP+RIGHT);
+
+		children();
+	}
+}
