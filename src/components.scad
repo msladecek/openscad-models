@@ -14,11 +14,11 @@ module smts_102(angle=0, locating_plate=false, nuts=false) {
 	lever_height = 9.5;
 	lever_core_height = lever_height - lever_diameter;
 
-	cube([body_width, body_depth, body_height], anchor=TOP)
-	{
+	cube([body_width, body_depth, body_height], anchor=TOP) {
 		attach(TOP, BOTTOM)
 		cylinder(d=smts_102__bolt_diameter, h=6) {
-			if (locating_plate) zcyl(d=11, h=0.5);
+			if (locating_plate)
+			zcyl(d=11, h=0.5);
 
 			if (nuts)
 			zcopies(n=2, spacing=1.5)
@@ -28,12 +28,11 @@ module smts_102(angle=0, locating_plate=false, nuts=false) {
 			down(3)
 			yrot(constrain(angle, -12, 12))
 			cylinder(d=lever_diameter, h=(lever_core_height + 3))
-				attach(TOP)
-				sphere(d=lever_diameter);
+			attach(TOP)
+			sphere(d=lever_diameter);
 		}
 
-		attach(BOTTOM, TOP)
-		{
+		attach(BOTTOM, TOP) {
 			cube([0.5, 1.5, 4.8]);
 
 			xflip_copy()

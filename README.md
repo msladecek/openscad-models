@@ -17,7 +17,7 @@ The tool holder model is defined using [openscad](https://openscad.org/) and can
 
 ![photo of multiple 3d printed tool holders mounted on the shelf](/images/tool_holder_photo.jpeg)
 
-## ESP32-WROOM Enclosure
+## ESP32-WROOM devkit Enclosure
 
 A small box with a removable lid for an ESP32-WROOM dev board with cutouts for a USB-C port, the devboard's IO pins and push-through buttons.
 
@@ -61,3 +61,13 @@ Small plate that attaches to the bottom of the vacuum cleaner handle and allows 
 
 ![screenshot of adapter plate](/images/vacuum_cleaner_adapter.png)
 ![photo of vacuum cleaner](/images/vacuum_cleaner_photo.jpeg)
+
+## Cardboard strip cutter
+
+A two-part tool that holds a segment of a breakable utility blade and which can be used to quickly cut long strips of cardboard.
+Useful for making cat scratchers!
+
+Cardboard strip width and the blade size are easily customizable.
+
+![screenshot of the assembled cardboard cutter](/images/cardboard_strip_cutter.png)
+![screenshot of the unassembled cardboard cutter](/images/cardboard_strip_cutter_open.png)
