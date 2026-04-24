@@ -13,10 +13,21 @@ blade_angle = 45;
 
 handle_length = 80;
 
+two_blades = false;
+
 $slop = 0.04;
 
+module blade() {
+	prismoid(
+		size1=[blade_thickness, blade_width],
+		size2=[blade_thickness, blade_width],
+		yang=[90, blade_angle],
+		height=blade_length,
+		anchor=CENTER,
+	);
+}
 
-module handle() {
+module handle(second_blade=false) {
 	height = (blade_length - cardboard_thickness)/2 + clearance;
 
 	tag_scope()
@@ -38,14 +49,15 @@ module handle() {
 
 		tag("remove")
 		down(clearance + cardboard_thickness/2)
-		ycopies(n=2, l=(handle_length/2))
-		prismoid(
-			size1=[blade_thickness, blade_width],
-			size2=[blade_thickness, blade_width],
-			yang=[90, blade_angle],
-			height=blade_length,
-			anchor=LEFT
-		);
+		right(blade_thickness/2)
+		ycopies(n=2, l=(handle_length/2)) {
+			blade();
+
+			if (second_blade)
+			left(blade_thickness)
+			yrot(180)
+			blade();
+		}
 
 		tag("remove")
 		right(3)
@@ -61,20 +73,21 @@ module handle() {
 up(cardboard_thickness/2)
 up(clearance)
 up(10)
-handle();
+handle(second_blade=two_blades);
 
-recolor("red")
-fwd(handle_length/4)
-prismoid(
-	size1=[blade_thickness, blade_width],
-	size2=[blade_thickness, blade_width],
-	yang=[90, blade_angle],
-	height=blade_length,
-	anchor=LEFT
-);
+#recolor("red")
+fwd(handle_length/4) {
+	right(blade_thickness/2)
+	blade();
+
+	if (two_blades)
+	left(blade_thickness/2)
+	yrot(180)
+	blade();
+}
 
 down(cardboard_thickness/2)
 down(clearance)
 down(10)
 xrot(180)
-handle();
+handle(second_blade=two_blades);
