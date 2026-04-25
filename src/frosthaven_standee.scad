@@ -3,7 +3,7 @@ include <BOSL2/std.scad>
 thickness = 1.2;
 
 outer_diameter = 30;
-lower_shaft_diameter = 4;
+lower_shaft_width = 4;
 upper_shaft_diameter = 8;
 foot_profile = [19, 39/2];
 cardboard_thickness = 2.2;
@@ -17,7 +17,7 @@ module base() {
 	diff()
 	zcyl(d=outer_diameter, h=thickness, anchor=BOTTOM) {
 		attach(BOTTOM, BOTTOM, inside=true)
-		zcyl(d=(lower_shaft_diameter + 2 * get_slop()), h=2*thickness);
+		cuboid([lower_shaft_width + 2 * get_slop(), lower_shaft_width + 2 * get_slop(), 2 * thickness]);
 
 		attach(TOP, BOTTOM)
 		zcyl(d=(upper_shaft_diameter - 2 * get_slop()), h=thickness);
@@ -35,11 +35,18 @@ module base() {
 module dial() {
 	od = (outer_diameter - 0.2);
 	diff() {
-		tube(id=(upper_shaft_diameter + 2 * get_slop()), od=od, h=thickness, anchor=BOTTOM)
-		position(TOP)
-		xflip_copy()
-		left(foot_profile.x/2)
-		cuboid([thickness, foot_profile.y, thickness], anchor=BOTTOM+RIGHT);
+		tube(id=(upper_shaft_diameter + 2 * get_slop()), od=od, h=(2 * thickness), anchor=BOTTOM)
+		attach(TOP, TOP, inside=true)
+		tag("remove")
+		down(0.01)
+		cuboid([foot_profile.x, outer_diameter, thickness]);
+		// position(TOP)
+		// xflip_copy()
+		// left(foot_profile.x/2)
+		// cuboid([thickness, foot_profile.y, thickness], anchor=BOTTOM+RIGHT)
+		;
+
+
 
 		zrot(-90)
 		zrot(-16)
@@ -47,9 +54,9 @@ module dial() {
 		tag("remove")
 		tag_scope()
 		diff() {
-			pie_slice(d=2*od, h=2*thickness, anchor=CENTER);
+			pie_slice(d=2*od, h=3*thickness, anchor=CENTER);
 			tag("remove")
-			pie_slice(d=od/2, h=2*thickness, ang=36, anchor=CENTER);
+			pie_slice(d=od/2, h=3*thickness, ang=36, anchor=CENTER);
 		}
 	};
 }
@@ -59,7 +66,7 @@ module expander() {
 	attach(TOP, BOTTOM)
 	zcyl(d=(outer_diameter - 4 * 2), h=2)
 	attach(TOP, BOTTOM)
-	zcyl(d=(lower_shaft_diameter + 2 * get_slop()), h=(2 * thickness));
+	cuboid([lower_shaft_width - 2 * get_slop(), lower_shaft_width - 2 * get_slop(), 2 * thickness]);
 }
 
 xdistribute(spacing=outer_diameter*1.5) {
