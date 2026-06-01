@@ -27,18 +27,26 @@ module blade() {
 	);
 }
 
-module handle(second_blade=false) {
+module handle(second_blade=false, strip_width_label=true) {
 	height = (blade_length - cardboard_thickness)/2 + clearance;
 
 	tag_scope()
 	diff() {
 		left(3)
-		cuboid([6 + strip_width, handle_length, height], anchor=BOTTOM+LEFT)
-		position(RIGHT+BOTTOM)
-		down(clearance + cardboard_thickness/2)
-		yrot(180)
-		ycopies(n=2, l=handle_length/2)
-		joiner(l=handle_length/2, w=6, base=(height + clearance + cardboard_thickness/2));
+		cuboid([6 + strip_width, handle_length, height], anchor=BOTTOM+LEFT) {
+			if (strip_width_label)
+			tag("remove")
+			position(TOP+LEFT+FRONT)
+			back(3)
+			right(3)
+			text3d(str(strip_width), size=12);
+
+			position(RIGHT+BOTTOM)
+			down(clearance + cardboard_thickness/2)
+			yrot(180)
+			ycopies(n=2, l=handle_length/2)
+			joiner(l=handle_length/2, w=6, base=(height + clearance + cardboard_thickness/2));
+		}
 
 		tag("remove")
 		up(height - 3)
