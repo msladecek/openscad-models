@@ -2,23 +2,28 @@ include <BOSL2/std.scad>
 
 wall = 2;
 
-hole_diameter = 6;
+hole_diameter = 6.4;
 hole_spacing = [20, 15];
 
 switch_body_size = [16.5, 29.2, 18.5];
 switch_peg_size = [6.3, 0.7, 10];
 switch_peg_spacing = 23.8;
-switch_bolt_diameter = 11.7;
+switch_bolt_diameter = 11.8;
 switch_bolt_length = 8.8;
 switch_lever_length = 17;
 switch_lever_diameter = 4;
 
 switch_plate_size = [17, 41.6, 0.8];
 
-bolt_diameter = 3;
-plate_thickness = 1.6;
+bolt_diameter = 3.2;
+nut_size = 6.2;
+nut_height = 2.7;
 
-$fn = 32;
+plate_thickness = 1.6;
+plate_rim_height = 11;
+plate_rim_offset = 39.5 - plate_thickness - switch_plate_size.z;
+
+$fn = 64;
 
 module switch(plate=false) {
 	cuboid(switch_body_size, except=[BOTTOM], rounding=0.5, anchor=TOP) {
@@ -38,40 +43,45 @@ module switch(plate=false) {
 }
 
 module mounting_box() {
-	width = 2 * switch_body_size.x + 3 * wall;
+	width = hole_spacing.x + hole_diameter + 2 * wall;
 	height = switch_body_size.y * 2;
 	length_bottom = switch_body_size.z + switch_peg_size.z + 20;
 	angle = 30;
+	depth = 60;
 
+	// rot(from=TOP, to=FRONT)
 	diff()
-	prismoid(
-		size1=[width, length_bottom],
-		size2=[width, undef],
-		yang=[90 - angle, 90],
-		height=height,
-	) {
-		*
-		#attach(FRONT, TOP, inside=true, spin=180)
-		up(2)
-		switch(plate=true);
+	rect_tube(size=[width, height], length=depth, wall=wall) {
+		attach_part("inside")
+		attach(BACK, BOTTOM, spin=90)
+		cuboid([depth, width, nut_height]);
 
-		attach(FRONT, CENTER, inside=true)
-		zcyl(d=switch_bolt_diameter, l=3*wall);
-
-		attach(BACK, BACK, inside=true)
-		down(0.01)
-		prismoid(
-			size1=[width - 2 * wall, length_bottom - wall],
-			size2=[width - 2 * wall, undef],
-			yang=[90 - angle, 90],
-			height=(height - 2 * wall),
-		);
-
-		attach(BOTTOM, CENTER, inside=true)
+		attach(BACK, BOTTOM, align=TOP)
 		xcopies(spacing=hole_spacing.x, 2)
+		fwd(plate_rim_offset)
+		fwd(hole_spacing.y/2)
 		ycopies(spacing=hole_spacing.y, 2)
-		zcyl(h=3*wall, d=bolt_diameter);
-	};
+		zcyl(h=plate_thickness/2, d=hole_diameter)
+		attach(TOP, TOP, inside=true)
+		down(0.01)
+		tag("remove")
+		zcyl(h=(plate_thickness/2 + nut_height), d=bolt_diameter)
+		attach(BOTTOM, TOP)
+		regular_prism(n=6, h=nut_height, r=nut_size/2, anchor=BOTTOM, spin=30);
+
+		attach(TOP, BACK)
+		down(wall)
+		cuboid([width, wall, height]) {
+			attach(BACK, FRONT)
+			cuboid([width, switch_body_size.z/2, height])
+			attach(FRONT, TOP, inside=true)
+			cuboid([switch_body_size.x, switch_body_size.y, switch_body_size.z]);
+
+			attach(FRONT, CENTER, inside=true)
+			up(0.01)
+			zcyl(h=2*wall, d=switch_bolt_diameter);
+		}
+	}
 }
 
 module mounting_plate() {
@@ -84,7 +94,7 @@ module mounting_plate() {
 	attach(TOP, BOTTOM)
 	xcopies(spacing=hole_spacing.x, 2)
 	ycopies(spacing=hole_spacing.y, 2)
-	zcyl(h=plate_thickness, d=hole_diameter)
+	zcyl(h=plate_thickness/2, d=hole_diameter)
 	attach(TOP, TOP, inside=true)
 	down(0.01)
 	tag("remove")
@@ -100,5 +110,5 @@ zcyl(h=2, d=hole_diameter);
 // switch(plate=true);
 mounting_box();
 
-down(10)
+down(20)
 mounting_plate();
