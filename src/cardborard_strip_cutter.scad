@@ -7,22 +7,34 @@ cardboard_thickness = 5;
 strip_width = 60;
 
 blade_thickness = 1;
-blade_width = 22;
-blade_length = 18;
-blade_angle = 45;
-blade_rotation = 15;
+blade_width = 18;
+blade_length = 20;
+blade_bevel = 2;
+blade_angle = 60;
+blade_tilt = 10;
 
 handle_length = 80;
 
 $slop = 0.04;
 
 module blade() {
-	xrot(blade_rotation)
+	xrot(-blade_tilt)
+	back(blade_width/2)
+	xrot(-90 + blade_angle)
+	xrot(90)
 	prismoid(
-		size1=[blade_thickness, blade_width],
-		size2=[blade_thickness, blade_width],
-		yang=[90, blade_angle],
-		height=blade_length,
+		size1=[0.1, blade_length],
+		size2=[blade_thickness, blade_length],
+		yang=[180-blade_angle, blade_angle],
+		height=blade_bevel,
+		anchor=BOTTOM,
+	)
+	attach(TOP, BOTTOM)
+	prismoid(
+		size1=[blade_thickness, blade_length],
+		size2=[blade_thickness, blade_length],
+		yang=[180-blade_angle, blade_angle],
+		height=(blade_width - blade_bevel),
 		anchor=CENTER,
 	);
 }
@@ -58,9 +70,9 @@ module handle(strip_width_label=true) {
 		tag("remove")
 		down(clearance + cardboard_thickness/2)
 		right(blade_thickness/2)
-		ycopies(n=2, l=(handle_length/2)) {
-			blade();
-		}
+		xrot_copies(n=2)
+		fwd(handle_length/4)
+		blade();
 
 		tag("remove")
 		right(3)
