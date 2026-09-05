@@ -3,7 +3,7 @@ include <BOSL2/joiners.scad>
 
 clearance = 2;
 
-cardboard_thickness = 4;
+cardboard_thickness = 8;
 strip_width = 30;
 
 blade_thickness = 1;
@@ -11,7 +11,7 @@ blade_width = 18;
 blade_length = 20;
 blade_bevel = 2;
 blade_angle = 30;
-blade_tilt = 10;
+blade_tilt = 0;
 
 roller_diameter = 6;
 roller_count = 4;
@@ -88,6 +88,13 @@ module handle(strip_width_label=true) {
 			yflip_copy(handle_length/2 - 10)
 			attach(BOTTOM, BOTTOM, align=LEFT)
 			cuboid([6, 20, clearance], chamfer=clearance, edges=[TOP]);
+
+			attach(BOTTOM, BOTTOM, align=RIGHT)
+			cuboid(
+				[4 * inner_chamfer, handle_length, inner_chamfer],
+				chamfer=inner_chamfer,
+				edges=[TOP+RIGHT],
+			);
 		}
 
 		tag("remove")
@@ -98,41 +105,23 @@ module handle(strip_width_label=true) {
 		blade();
 
 		tag("remove")
-		right(inner_chamfer)
-		yflip_copy(offset=handle_length/8)
-		cuboid(
-			[strip_width - inner_chamfer + roller_offset, handle_length/4, cardboard_thickness/2 + clearance],
-			edges=[TOP],
-			chamfer=inner_chamfer,
-			anchor=BOTTOM+LEFT,
-		)
-		attach(BACK, FRONT)
-		cuboid(
-			[strip_width - inner_chamfer + roller_offset, handle_length/4, cardboard_thickness/2 + clearance],
-			edges=[TOP],
-			except=[BACK],
-			chamfer=inner_chamfer,
-			anchor=BOTTOM+LEFT,
-		);
-
-		tag("remove")
 		down(cardboard_thickness/2)
 		down(clearance)
 		rollers(roller_diameter + 4 * $slop, blade_length + 4 * $slop);
 	}
 }
 
-explode_distance = 20;
+explode_distance = 10;
 
 recolor("darkgreen")
 rollers();
 
-up(cardboard_thickness/2)
+#up(cardboard_thickness/2)
 up(clearance)
 up(explode_distance)
 handle();
 
-#recolor("red")
+recolor("red")
 fwd(handle_length/4) {
 	right(blade_thickness/2)
 	blade();
